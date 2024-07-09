@@ -1,4 +1,4 @@
-import { Card, CalcHand } from './Cards';
+import { Card, CalcHand, HasAce } from './Cards';
 
 function CheckForWinner(player: Card[], dealer: Card) {
     const playerPoints = CalcHand(player);
@@ -24,7 +24,19 @@ function CheckForWinner(player: Card[], dealer: Card) {
             } 
             else
                 if (playerPoints > 21) {
-                    return "Dealer wins";
+                    if(HasAce(player)){
+                        for(const card of player){
+                            const rank = card.name.split("_of_")[0];
+                                if (rank === "ace") {
+                                    card.value = 1;
+                                    break;
+                            }
+                        }
+                        return null;
+                    }
+                    else{
+                        return "Dealer wins";
+                    }
                 }
                 else
                     if (playerPoints === 21) {

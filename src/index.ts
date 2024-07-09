@@ -22,7 +22,7 @@ app.get('/receive-data', (req: Request, res: Response) => {
   if (message === 'Hello from client!') {
     player = [];
     dealer = [];
-
+    deck = CreateDeck();
     for (let i = 0; i < 2; i++) {
       let cardIndex = getRndInteger(0, deck.length - 1);
       player.push(deck.splice(cardIndex, 1)[0]);
@@ -31,36 +31,65 @@ app.get('/receive-data', (req: Request, res: Response) => {
       dealer.push(deck.splice(cardIndex, 1)[0]);
     }
 
-    const playerCardNames = [player[0].name, player[1].name];
-    const playerPoints = CalcHand(player); 
+    const playerCardNames = [player[0].name, player[1].name]; 
     const dealerCardName = dealer[0].name;
     const winner = CheckForWinner(player, dealer[0]);
+    const playerPoints = CalcHand(player);
+    let dealerCard;
+    let delerPoints;
+    if(winner){
+       dealerCard = dealer[1].name;
+       delerPoints = CalcHand(dealer); 
+    }
+    else{
+       dealerCard = null;
+       delerPoints = null;
+    }
     const responseData = {
       playerCards: playerCardNames,
       playerPoints: playerPoints,
       dealerCard: dealerCardName,
       howisthewinner: winner,
+      dealerfirstcard : dealerCard,
+      delerPoints : delerPoints,
     };
 
     res.json(responseData);
-  } else if (message === 'get card') {
+  } 
+  else if (message === 'get card') {
     let cardIndex = getRndInteger(0, deck.length - 1);
     player.push(deck.splice(cardIndex, 1)[0]);
     const playerCardName = player[player.length - 1].name;
-    const playerPoints = CalcHand(player); 
     const winner = CheckForWinner(player, dealer[0]);
+    const playerPoints = CalcHand(player); 
+    let dealerCard;
+    let delerPoints;
+    if(winner){
+       dealerCard = dealer[1].name;
+       delerPoints = CalcHand(dealer); 
+    }
+    else{
+       dealerCard = null;
+       delerPoints = null;
+    }
     const responseData = {
       playerCard: playerCardName,
       playerPoints: playerPoints,
       howisthewinner: winner,
+      dealerfirstcard : dealerCard,
+      delerPoints : delerPoints,
     };
 
     res.json(responseData);
-  } else if (message === 'Stand') {
+  } 
+  else if (message === 'Stand') {
     const winner = HowWon(player, dealer);
-
+    const dealerCard = dealer[1].name;
+    const delerPoints = CalcHand(dealer); 
     const responseData = {
-      howisthewinner: winner
+      howisthewinner: winner,
+      dealerfirstcard : dealerCard,
+      delerPoints : delerPoints,
     };
     res.json(responseData);
   }
