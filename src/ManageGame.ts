@@ -1,8 +1,10 @@
-import { Card, CalcHand, HasAce } from "./Cards";
+import { Card, calcHand, hasAce } from "./Cards";
 
-export function CheckForWinner(player: Card[], dealer: Card) {
-  const playerPoints = CalcHand(player);
+export function checkForWinner(player: Card[], dealer: Card[]) {
+  const playerPoints = calcHand(player);
+  const dealerPoints = calcHand(dealer);
   let playerHasJoker = false;
+  let dealerHasJoker = false;
 
   for (const card of player) {
     if (card.isjoker) {
@@ -10,15 +12,21 @@ export function CheckForWinner(player: Card[], dealer: Card) {
       break;
     }
   }
+  for (const card of dealer) {
+    if (card.isjoker) {
+      dealerHasJoker = true;
+      break;
+    }
+  }
 
-  if (dealer.isjoker && playerHasJoker) {
+  if (dealerHasJoker && playerHasJoker) {
     return "Tie";
-  } else if (dealer.isjoker) {
+  } else if (dealerHasJoker) {
     return "Dealer wins";
   } else if (playerHasJoker) {
     return "Player wins";
   } else if (playerPoints > 21) {
-    if (HasAce(player)) {
+    if (hasAce(player)) {
       for (const card of player) {
         const rank = card.name.split("_of_")[0];
         if (rank === "ace") {
@@ -32,19 +40,32 @@ export function CheckForWinner(player: Card[], dealer: Card) {
     }
   } else if (playerPoints === 21) {
     return "Player wins";
+  } else if (dealerPoints === 21) {
+    return "Dealer wins";
   } else {
     return null;
   }
 }
 
-export const HowWon = (player: Card[], dealer: Card[]) => {
-  const playerPoints = CalcHand(player);
-  const dealerPoints = CalcHand(dealer);
+export const whoWon = (player: Card[], dealer: Card[]) => {
+  const playerPoints = calcHand(player);
+  const dealerPoints = calcHand(dealer);
 
   if (playerPoints > 21) {
     return "Dealer wins";
   } else if (dealerPoints > 21) {
-    return "Player wins";
+    if (hasAce(dealer)) {
+      for (const card of dealer) {
+        const rank = card.name.split("_of_")[0];
+        if (rank === "ace") {
+          card.value = 1;
+          break;
+        }
+      }
+      return null;
+    } else {
+      return "Player wins";
+    }
   } else if (playerPoints > dealerPoints) {
     return "Player wins";
   } else if (dealerPoints > playerPoints) {

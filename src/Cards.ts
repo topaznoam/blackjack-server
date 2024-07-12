@@ -1,10 +1,10 @@
-type Card = {
+export type Card = {
   name: string;
   value: number;
   isjoker: boolean;
 };
 
-function HasAce(hand: Card[]): boolean {
+export function hasAce(hand: Card[]): boolean {
   for (const card of hand) {
     const rank = card.name.split("_of_")[0];
     if (rank === "ace" && card.value === 11) {
@@ -14,7 +14,7 @@ function HasAce(hand: Card[]): boolean {
   return false;
 }
 
-function CalcHand(hand: Card[]): number {
+export function calcHand(hand: Card[]): number {
   let sum = 0;
   for (const card of hand) {
     sum += card.value;
@@ -22,7 +22,7 @@ function CalcHand(hand: Card[]): number {
   return sum;
 }
 
-function CreateDeck(): Card[] {
+export function createDeck(): Card[] {
   const suits = ["hearts", "diamonds", "clubs", "spades"];
   const ranks = [
     "2",
@@ -67,5 +67,3 @@ function CreateDeck(): Card[] {
 
   return deck;
 }
-
-export { CreateDeck, CalcHand, Card, HasAce };
